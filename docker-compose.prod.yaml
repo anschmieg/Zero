@@ -75,7 +75,7 @@ services:
     volumes:
       - valkey-data:/data
     healthcheck:
-      test: ['CMD', 'redis-cli', '-h', 'localhost', '-p', '6379', 'ping']
+      test: ['CMD', 'valkey-cli', '-h', 'localhost', '-p', '6379', 'ping']
       interval: 10s
       timeout: 5s
       retries: 5
