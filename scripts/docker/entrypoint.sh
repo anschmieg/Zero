@@ -17,4 +17,4 @@ fi
 cd /app
 
 
-exec node /app/apps/mail/build/server/index.js
+cd /app/apps/mail && exec npx serve@latest build/client -l 3000
