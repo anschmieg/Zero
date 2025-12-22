@@ -17,4 +17,4 @@ fi
 cd /app
 
 
-cd /app/apps/mail && exec pnpm start
+cd /app/apps/mail && exec npx pnpm start
