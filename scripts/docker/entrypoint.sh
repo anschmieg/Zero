@@ -17,4 +17,4 @@ fi
 cd /app
 
 
-exec node /app/apps/mail/server.js
+cd /app/apps/mail && exec pnpm start
