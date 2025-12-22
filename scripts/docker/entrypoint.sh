@@ -7,4 +7,14 @@ set -x
 /app/scripts/replace-placeholder.sh "http://REPLACE-BACKEND-URL.com" "$NEXT_PUBLIC_BACKEND_URL"
 /app/scripts/replace-placeholder.sh "http://REPLACE-APP-URL.com" "$NEXT_PUBLIC_APP_URL"
 
+# Run database migrations with error handling (safe fallback)
+echo "Running database migrations..."
+if cd /app/apps/server && pnpm run db:migrate; then
+    echo "Migrations completed successfully"
+else
+    echo "WARNING: Migrations failed, but continuing to start server..."
+fi
+cd /app
+
+
 exec node /app/apps/mail/server.js
