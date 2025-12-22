@@ -17,4 +17,4 @@ fi
 cd /app
 
 
-cd /app/apps/mail && exec npx pnpm start
+exec node /app/apps/mail/build/server/index.js
