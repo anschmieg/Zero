@@ -17,4 +17,4 @@ fi
 cd /app
 
 
-ls -la /app/apps/mail/build && exec npx serve@latest /app/apps/mail/build -l 3000
+exec npx serve@latest /app/apps/mail/build/client -l 3000
