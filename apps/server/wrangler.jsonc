@@ -58,7 +58,6 @@
             "name": "WORKFLOW_RUNNER",
             "class_name": "WorkflowRunner",
           },
-
           {
             "name": "THREAD_SYNC_WORKER",
             "class_name": "ThreadSyncWorker",
@@ -111,7 +110,7 @@
       "migrations": [
         {
           "tag": "v1",
-          "new_classes": ["DurableMailbox"],
+          "new_sqlite_classes": ["DurableMailbox"],
         },
         {
           "tag": "v2",
@@ -119,7 +118,7 @@
         },
         {
           "tag": "v3",
-          "new_classes": ["ZeroDB"],
+          "new_sqlite_classes": ["ZeroDB"],
         },
         {
           "tag": "v4",
@@ -145,9 +144,7 @@
           "tag": "v9",
           "new_sqlite_classes": ["ShardRegistry"],
         },
-
       ],
-
       "observability": {
         "enabled": true,
       },
@@ -287,7 +284,6 @@
             "name": "SHARD_REGISTRY",
             "class_name": "ShardRegistry",
           },
-
         ],
       },
       "workflows": [
@@ -376,7 +372,6 @@
           "tag": "v10",
           "new_sqlite_classes": ["ShardRegistry"],
         },
-
       ],
       "observability": {
         "enabled": true,
@@ -521,7 +516,6 @@
             "name": "SHARD_REGISTRY",
             "class_name": "ShardRegistry",
           },
-
         ],
       },
       "workflows": [
@@ -604,7 +598,6 @@
           "tag": "v10",
           "new_sqlite_classes": ["ShardRegistry"],
         },
-
       ],
       "vars": {
         "NODE_ENV": "production",
