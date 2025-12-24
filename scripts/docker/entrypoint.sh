@@ -17,4 +17,4 @@ fi
 cd /app
 
 
-cd /app/apps/mail && npx pnpm build && node build/server/index.js
+cd /app/apps/mail && node build/server/index.js
