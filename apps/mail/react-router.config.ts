@@ -1,8 +1,7 @@
 import type { Config } from '@react-router/dev/config';
 
 export default {
-  ssr: false,
-  buildDirectory: 'build',
+  ssr: true,  buildDirectory: 'build',
   appDirectory: 'app',
   routeDiscovery: {
     mode: 'initial',
