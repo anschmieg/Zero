@@ -152,12 +152,12 @@
         "enabled": true,
       },
       "hyperdrive": [
-        {
-          "binding": "HYPERDRIVE",
-          "id": "57834ddb6716440496c8836f6d99bc9a",
-          "localConnectionString": "postgresql://postgres:postgres@localhost:5432/zerodotemail",
-        },
-      ],
+			  {
+			    "binding": "DATABASE", 
+			    "id": "7c38c7d1123e47d5aa8b1802f16795e4",
+			    "localConnectionString": "postgresql://mail0:7Sqji9mjrM8yf5fSOLTs99CayMCtILur8shSc63e8alXQ9YZR6prF1hH9SpQNEKb@localhost:6432/postgres"
+			  }
+			],
       "vars": {
         "NODE_ENV": "local",
         "COOKIE_DOMAIN": "localhost",
@@ -606,22 +606,19 @@
         },
 
       ],
-      "vars": {
-        "NODE_ENV": "production",
-        "COOKIE_DOMAIN": "0.email",
-        "VITE_PUBLIC_BACKEND_URL": "https://api.0.email",
-        "VITE_PUBLIC_APP_URL": "https://0.email",
-        "DISABLE_CALLS": "true",
-        "DROP_AGENT_TABLES": "false",
-        "THREAD_SYNC_MAX_COUNT": "60",
-        "THREAD_SYNC_LOOP": "true",
-        "DISABLE_WORKFLOWS": "true",
-        "OTEL_EXPORTER_OTLP_ENDPOINT": "https://api.axiom.co/v1/traces",
-        "OTEL_SERVICE_NAME": "zero-email-server-production",
-        "DD_API_KEY": "",
-        "DD_APP_KEY": "",
-        "DD_SITE": "datadoghq.com",
-      },
+			"vars": {
+			  "NODE_ENV": "production",
+			  "COOKIE_DOMAIN": "nothing.pink", // Changed from localhost to your production domain
+			  "VITE_PUBLIC_APP_URL": "https://mail0.nothing.pink",
+			  "VITE_PUBLIC_BACKEND_URL": "https://mail0.s-x.workers.dev",
+			  "BETTER_AUTH_URL": "https://mail0.nothing.pink",
+			  "OPENAI_MODEL": "gpt-4.1",
+			  "OPENAI_MINI_MODEL": "gpt-5-mini",
+			  "DROP_AGENT_TABLES": "false",
+			  "USE_OPENAI": "true",
+			  "THREAD_SYNC_MAX_COUNT": "60",
+			  "DISABLE_WORKFLOWS": "true"
+			},
       "kv_namespaces": [
         {
           "binding": "gmail_history_id",
