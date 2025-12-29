@@ -60,3 +60,9 @@ worker-configuration.d.ts
 tsx-0/
 
 tools.json
+
+*-certs/
+*.crt
+*.key
+*.pem
+*.p12

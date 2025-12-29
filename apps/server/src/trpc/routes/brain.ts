@@ -1,4 +1,4 @@
-import { disableBrainFunction, getPrompts } from '../../lib/brain';
+import { disableBrainFunction, enableBrainFunction, getPrompts } from '../../lib/brain';
 import { EProviders, EPrompts, type ISubscribeBatch } from '../../types';
 import { activeConnectionProcedure, router } from '../trpc';
 import { setSubscribedState } from '../../lib/utils';
@@ -16,10 +16,10 @@ export const brainRouter = router({
   enableBrain: activeConnectionProcedure.mutation(async ({ ctx }) => {
     const connection = ctx.activeConnection as { id: string; providerId: EProviders };
     await setSubscribedState(connection.id, connection.providerId);
-    await env.subscribe_queue.send({
-      connectionId: connection.id,
+    await enableBrainFunction({
+      id: connection.id,
       providerId: connection.providerId,
-    } as ISubscribeBatch);
+    });
     return true;
     // return await enableBrainFunction(connection);
   }),

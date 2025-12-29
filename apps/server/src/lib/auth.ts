@@ -11,17 +11,18 @@ import { createAuthMiddleware, phoneNumber, jwt, bearer, mcp } from 'better-auth
 import { type Account, betterAuth, type BetterAuthOptions } from 'better-auth';
 import { getBrowserTimezone, isValidTimezone } from './timezones';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
+import { getZeroDB, resetConnection } from './server-utils';
 import { getSocialProviders } from './auth-providers';
 import { redis, resend, twilio } from './services';
-import { getContext } from 'hono/context-storage';
 import { dubAnalytics } from '@dub/better-auth';
 import { defaultUserSettings } from './schemas';
-import { disableBrainFunction } from './brain';
+import { disableBrainFunction, enableBrainFunction } from './brain';
 import { APIError } from 'better-auth/api';
-import { getZeroDB } from './server-utils';
 import { type EProviders } from '../types';
 import type { HonoContext } from '../ctx';
+import { getContext } from 'hono/context-storage';
 import { createDriver } from './driver';
+import { Autumn } from 'autumn-js';
 import { createDb } from '../db';
 import { Effect } from 'effect';
 import { env } from '../env';
@@ -92,7 +93,9 @@ const scheduleCampaign = (userInfo: { address: string; name: string }) =>
 const connectionHandlerHook = async (account: Account) => {
   if (!account.accessToken || !account.refreshToken) {
     console.error('Missing Access/Refresh Tokens', { account });
-    throw new APIError('EXPECTATION_FAILED', { message: 'Missing Access/Refresh Tokens' });
+    throw new APIError('EXPECTATION_FAILED', {
+      message: 'Missing Access/Refresh Tokens, contact us on Discord for support',
+    });
   }
 
   const driver = createDriver(account.providerId, {
@@ -104,13 +107,26 @@ const connectionHandlerHook = async (account: Account) => {
     },
   });
 
-  const userInfo = await driver.getUserInfo().catch(() => {
-    throw new APIError('UNAUTHORIZED', { message: 'Failed to get user info' });
+  const userInfo = await driver.getUserInfo().catch(async () => {
+    if (account.accessToken) {
+      await driver.revokeToken(account.accessToken);
+      await resetConnection(account.id);
+    }
+    throw new Response(null, { status: 301, headers: { Location: '/' } });
   });
 
   if (!userInfo?.address) {
-    console.error('Missing email in user info:', { userInfo });
-    throw new APIError('BAD_REQUEST', { message: 'Missing "email" in user info' });
+    try {
+      await Promise.allSettled(
+        [account.accessToken, account.refreshToken]
+          .filter(Boolean)
+          .map((t) => driver.revokeToken(t as string)),
+      );
+      await resetConnection(account.id);
+    } catch (error) {
+      console.error('Failed to revoke tokens:', error);
+    }
+    throw new Response(null, { status: 303, headers: { Location: '/' } });
   }
 
   const updatingInfo = {
@@ -136,9 +152,9 @@ const connectionHandlerHook = async (account: Account) => {
   }
 
   if (env.GOOGLE_S_ACCOUNT && env.GOOGLE_S_ACCOUNT !== '{}') {
-    await env.subscribe_queue.send({
-      connectionId: result.id,
-      providerId: account.providerId,
+    await enableBrainFunction({
+      id: result.id,
+      providerId: account.providerId as EProviders,
     });
   }
 };
@@ -192,21 +208,17 @@ export const createAuth = () => {
           const db = await getZeroDB(user.id);
           const connections = await db.findManyConnections();
           const context = getContext<HonoContext>();
-          const customer = await context.var.autumn.customers.get(user.id);
-          if (customer.data) {
+          if (context?.var?.autumn?.customers) {
             try {
-              await Promise.all(
-                customer.data.products.map(async (product) =>
-                  context.var.autumn.cancel({
-                    customer_id: user.id,
-                    product_id: product.id,
-                  }),
-                ),
-              );
+              await context.var.autumn.customers.delete(user.id);
             } catch (error) {
               console.error('Failed to delete Autumn customer:', error);
             }
+          } else {
+             // Fallback or skip if not in context
+             console.warn('Autumn context not available for user deletion');
           }
+
 
           const revokedAccounts = (
             await Promise.allSettled(
