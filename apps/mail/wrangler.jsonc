@@ -21,8 +21,8 @@
     "staging": {
       "name": "zero-staging",
       "vars": {
-        "VITE_PUBLIC_BACKEND_URL": "https://staging-api.nothing.pink",
-        "VITE_PUBLIC_APP_URL": "https://staging.nothing.pink",
+        "VITE_PUBLIC_BACKEND_URL": "https://zero-staging-api.nothing.pink",
+        "VITE_PUBLIC_APP_URL": "https://zero-staging.nothing.pink",
       },
     },
     "production": {
