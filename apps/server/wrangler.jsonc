@@ -530,33 +530,6 @@
           "name": "sync-threads-coordinator-workflow-prod",
         },
       ],
-      "queues": {
-        "producers": [
-          {
-            "queue": "thread-queue-prod",
-            "binding": "thread_queue",
-          },
-          {
-            "queue": "subscribe-queue-prod",
-            "binding": "subscribe_queue",
-          },
-          {
-            "queue": "send-email-queue-prod",
-            "binding": "send_email_queue",
-          },
-        ],
-        "consumers": [
-          {
-            "queue": "subscribe-queue-prod",
-          },
-          {
-            "queue": "thread-queue-prod",
-          },
-          {
-            "queue": "send-email-queue-prod",
-          },
-        ],
-      },
       "migrations": [
         {
           "tag": "v1",

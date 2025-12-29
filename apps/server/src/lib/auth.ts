@@ -16,7 +16,7 @@ import { getSocialProviders } from './auth-providers';
 import { redis, resend, twilio } from './services';
 import { dubAnalytics } from '@dub/better-auth';
 import { defaultUserSettings } from './schemas';
-import { disableBrainFunction } from './brain';
+import { disableBrainFunction, enableBrainFunction } from './brain';
 import { APIError } from 'better-auth/api';
 import { type EProviders } from '../types';
 import { createDriver } from './driver';
@@ -150,9 +150,9 @@ const connectionHandlerHook = async (account: Account) => {
   }
 
   if (env.GOOGLE_S_ACCOUNT && env.GOOGLE_S_ACCOUNT !== '{}') {
-    await env.subscribe_queue.send({
-      connectionId: result.id,
-      providerId: account.providerId,
+    await enableBrainFunction({
+      id: result.id,
+      providerId: account.providerId as EProviders,
     });
   }
 };

@@ -20,10 +20,8 @@ export type ZeroEnv = {
   pending_emails_status: KVNamespace;
   pending_emails_payload: KVNamespace;
   scheduled_emails: KVNamespace;
-  send_email_queue: Queue;
   snoozed_emails: KVNamespace;
   gmail_sub_age: KVNamespace;
-  subscribe_queue: Queue;
   AI: Ai;
   gmail_history_id: KVNamespace;
   gmail_processing_threads: KVNamespace;
@@ -89,7 +87,6 @@ export type ZeroEnv = {
   AXIOM_API_TOKEN: string;
   AXIOM_DATASET: string;
   THREADS_BUCKET: R2Bucket;
-  thread_queue: Queue;
   VECTORIZE: VectorizeIndex;
   VECTORIZE_MESSAGE: VectorizeIndex;
   DEV_PROXY: string;
