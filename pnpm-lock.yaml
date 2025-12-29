@@ -107,6 +107,9 @@ importers:
       '@ai-sdk/react':
         specifier: 1.2.12
         version: 1.2.12(react@19.1.0)(zod@3.25.67)
+      '@cloudflare/workerd-linux-arm64':
+        specifier: ^1.20250510.0
+        version: 1.20250816.0
       '@dnd-kit/core':
         specifier: 6.3.1
         version: 6.3.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -10412,8 +10415,7 @@ snapshots:
   '@cloudflare/workerd-linux-arm64@1.20250617.0':
     optional: true
 
-  '@cloudflare/workerd-linux-arm64@1.20250816.0':
-    optional: true
+  '@cloudflare/workerd-linux-arm64@1.20250816.0': {}
 
   '@cloudflare/workerd-windows-64@1.20250617.0':
     optional: true
