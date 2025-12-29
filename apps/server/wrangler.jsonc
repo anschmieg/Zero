@@ -334,7 +334,7 @@
       "migrations": [
         {
           "tag": "v1",
-          "new_classes": ["DurableMailbox"],
+          "new_sqlite_classes": ["DurableMailbox"],
         },
         {
           "tag": "v2",
@@ -342,7 +342,7 @@
         },
         {
           "tag": "v3",
-          "new_classes": ["ZeroDB"],
+          "new_sqlite_classes": ["ZeroDB"],
         },
         {
           "tag": "v4",
@@ -478,7 +478,7 @@
       "hyperdrive": [
         {
           "binding": "HYPERDRIVE",
-          "id": "b1be316b45fb439a9e54b74ecc20aa21",
+          "id": "7c38c7d1123e47d5aa8b1802f16795e4",
           "localConnectionString": "postgresql://postgres:postgres@localhost:5432/zerodotemail",
         },
       ],
@@ -533,7 +533,7 @@
       "migrations": [
         {
           "tag": "v1",
-          "new_classes": ["DurableMailbox"],
+          "new_sqlite_classes": ["DurableMailbox"],
         },
         {
           "tag": "v2",
@@ -541,11 +541,11 @@
         },
         {
           "tag": "v3",
-          "new_classes": ["ZeroDB"],
+          "new_sqlite_classes": ["ZeroDB"],
         },
         {
           "tag": "v4",
-          "new_sqlite_classes": ["ZeroAgent"],
+          "new_sqlite_classes": [],
         },
         {
           "tag": "v5",
