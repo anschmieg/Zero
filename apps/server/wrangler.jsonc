@@ -385,9 +385,9 @@
       ],
       "vars": {
         "NODE_ENV": "development",
-        "COOKIE_DOMAIN": "0.email",
-        "VITE_PUBLIC_BACKEND_URL": "https://sapi.0.email",
-        "VITE_PUBLIC_APP_URL": "https://staging.0.email",
+        "COOKIE_DOMAIN": "nothing.pink",
+        "VITE_PUBLIC_BACKEND_URL": "https://staging-api.nothing.pink",
+        "VITE_PUBLIC_APP_URL": "https://staging.nothing.pink",
         "DISABLE_CALLS": "",
         "DROP_AGENT_TABLES": "false",
         "THREAD_SYNC_MAX_COUNT": "60",
