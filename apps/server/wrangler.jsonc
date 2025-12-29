@@ -456,7 +456,7 @@
       "r2_buckets": [
         {
           "binding": "THREADS_BUCKET",
-          "bucket_name": "threads",
+          "bucket_name": "zero-threads-prod",
         },
       ],
       "ai": {
@@ -465,11 +465,11 @@
       "vectorize": [
         {
           "binding": "VECTORIZE",
-          "index_name": "threads-vector",
+          "index_name": "zero-threads-vector-prod",
         },
         {
           "binding": "VECTORIZE_MESSAGE",
-          "index_name": "messages-vector",
+          "index_name": "zero-messages-vector-prod",
         },
       ],
       "observability": {
@@ -591,43 +591,43 @@
       "kv_namespaces": [
         {
           "binding": "gmail_history_id",
-          "id": "10005d74e84f4f18a17c9618d9e9cecf",
+          "id": "b0b9d469f4f04630b7b19fedd0673a75",
         },
         {
           "binding": "gmail_processing_threads",
-          "id": "3348ff0976284269a8d8a5e6e4c04c56",
+          "id": "0dc73c27b7b84ab59082d2f345fd2179",
         },
         {
           "binding": "subscribed_accounts",
-          "id": "5902b3b948ff4c4ba1aedbbbbe25503d",
+          "id": "2bf59e929ebe468f94e652eb1aa4a68b",
         },
         {
           "binding": "connection_labels",
-          "id": "9a13290a55ad4f62824c67005dd66f6f",
+          "id": "ef76c92800c0413ea68177a2e38eb156",
         },
         {
           "binding": "prompts_storage",
-          "id": "2a4ebda553f3456085cfcf92cc0f570f",
+          "id": "d5ab864c193e4ff2b9148e899fe49638",
         },
         {
           "binding": "gmail_sub_age",
-          "id": "0591e91fffcc4675aaf00f909bee77d2",
+          "id": "ce935c927a724d72aa4796a0fff8b547",
         },
         {
           "binding": "pending_emails_status",
-          "id": "e65f8f72441d4eadb9d5ae36269316c9",
+          "id": "f1911309764946a383410bce27521c2d",
         },
         {
           "binding": "pending_emails_payload",
-          "id": "e65f8f72441d4eadb9d5ae36269316c9_payload",
+          "id": "5a6539fb6aa14a27b9fb643cc9c8f66c",
         },
         {
           "binding": "scheduled_emails",
-          "id": "e65f8f72441d4eadb9d5ae36269316c9_scheduled",
+          "id": "fb19041a090f4d1aa89ae76a539906b2",
         },
         {
           "binding": "snoozed_emails",
-          "id": "f0952e9c3b024cb499c4b9dfe8bb603e",
+          "id": "f738666b12914f0b9a6eae7288305c39",
         },
       ],
     },
