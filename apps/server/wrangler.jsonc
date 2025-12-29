@@ -574,9 +574,9 @@
       ],
       "vars": {
         "NODE_ENV": "production",
-        "COOKIE_DOMAIN": "0.email",
-        "VITE_PUBLIC_BACKEND_URL": "https://api.0.email",
-        "VITE_PUBLIC_APP_URL": "https://0.email",
+        "COOKIE_DOMAIN": "nothing.pink",
+        "VITE_PUBLIC_BACKEND_URL": "https://zero-api.nothing.pink",
+        "VITE_PUBLIC_APP_URL": "https://zero.nothing.pink",
         "DISABLE_CALLS": "true",
         "DROP_AGENT_TABLES": "false",
         "THREAD_SYNC_MAX_COUNT": "60",
