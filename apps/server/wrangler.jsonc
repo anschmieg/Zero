@@ -629,7 +629,7 @@
           "binding": "snoozed_emails",
           "id": "f738666b12914f0b9a6eae7288305c39",
         },
-      ],
+      ],"name": "zero-mail-server",
     },
   },
 }
