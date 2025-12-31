@@ -2,14 +2,14 @@ import { env } from '../env';
 import { Redis } from '@upstash/redis';
 import { Resend } from 'resend';
 
-export const resend = () =>
+export const resend = (env: Record<string, string>) =>
   env.RESEND_API_KEY
     ? new Resend(env.RESEND_API_KEY)
     : { emails: { send: async (...args: unknown[]) => console.log(args) } };
 
-export const redis = () => new Redis({ url: env.REDIS_URL, token: env.REDIS_TOKEN });
+export const redis = (env: Record<string, string>) => new Redis({ url: env.REDIS_URL, token: env.REDIS_TOKEN });
 
-export const twilio = () => {
+export const twilio = (env: Record<string, string>) => {
   if (!env.TWILIO_ACCOUNT_SID || !env.TWILIO_AUTH_TOKEN || !env.TWILIO_PHONE_NUMBER) {
     console.warn('[TWILIO] Not configured - phone authentication will not work');
     return {

@@ -618,7 +618,7 @@ const api = new Hono<HonoContext>()
       'auth.method': c.req.header('Authorization') ? 'bearer_token' : 'session_cookie'
     });
 
-    const auth = createAuth();
+    const auth = createAuth(c.env);
     c.set('auth', auth);
     const session = await auth.api.getSession({ headers: c.req.raw.headers });
     c.set('sessionUser', session?.user);
@@ -759,7 +759,7 @@ const app = new Hono<HonoContext>()
     }),
   )
   .get('.well-known/oauth-authorization-server', async (c) => {
-    const auth = createAuth();
+    const auth = createAuth(c.env);
     return oAuthDiscoveryMetadata(auth)(c.req.raw);
   })
   .mount(
@@ -770,7 +770,7 @@ const app = new Hono<HonoContext>()
         console.log('No auth provided');
         return new Response('Unauthorized', { status: 401 });
       }
-      const auth = createAuth();
+      const auth = createAuth(env as unknown as ZeroEnv);
       const session = await auth.api.getMcpSession({ headers: request.headers });
       if (!session) {
         console.log('Invalid auth provided', Array.from(request.headers.entries()));
@@ -801,7 +801,7 @@ const app = new Hono<HonoContext>()
       if (!authBearer) {
         return new Response('Unauthorized', { status: 401 });
       }
-      const auth = createAuth();
+      const auth = createAuth(env as unknown as ZeroEnv);
       const session = await auth.api.getMcpSession({ headers: request.headers });
       if (!session) {
         console.log('Invalid auth provided', Array.from(request.headers.entries()));

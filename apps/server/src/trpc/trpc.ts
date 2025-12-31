@@ -145,7 +145,7 @@ export const createRateLimiterMiddleware = (config: {
 }) =>
   t.middleware(async ({ next, ctx, input }) => {
     const ratelimiter = new Ratelimit({
-      redis: redis(),
+      redis: redis(ctx.c.env as unknown as Record<string, string>),
       limiter: config.limiter,
       analytics: true,
       prefix: config.generatePrefix(ctx, input),

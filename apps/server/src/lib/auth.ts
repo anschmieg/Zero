@@ -18,20 +18,20 @@ import { dubAnalytics } from '@dub/better-auth';
 import { defaultUserSettings } from './schemas';
 import { disableBrainFunction, enableBrainFunction } from './brain';
 import { APIError } from 'better-auth/api';
-import { type EProviders } from '../types';
+import { EProviders } from '../types';
 import type { HonoContext } from '../ctx';
 import { getContext } from 'hono/context-storage';
 import { createDriver } from './driver';
 import { Autumn } from 'autumn-js';
 import { createDb } from '../db';
 import { Effect } from 'effect';
-import { env } from '../env';
+import { type ZeroEnv } from '../env';
 import { Dub } from 'dub';
 
-const scheduleCampaign = (userInfo: { address: string; name: string }) =>
+const scheduleCampaign = (userInfo: { address: string; name: string }, env: ZeroEnv) =>
   Effect.gen(function* () {
     const name = userInfo.name || 'there';
-    const resendService = resend();
+    const resendService = resend(env as unknown as Record<string, string>);
 
     const sendEmail = (subject: string, react: unknown, scheduledAt?: string) =>
       Effect.promise(() =>
@@ -90,7 +90,7 @@ const scheduleCampaign = (userInfo: { address: string; name: string }) =>
     );
   });
 
-const connectionHandlerHook = async (account: Account) => {
+const connectionHandlerHook = async (account: Account, env: ZeroEnv) => {
   if (!account.accessToken || !account.refreshToken) {
     console.error('Missing Access/Refresh Tokens', { account });
     throw new APIError('EXPECTATION_FAILED', {
@@ -98,7 +98,7 @@ const connectionHandlerHook = async (account: Account) => {
     });
   }
 
-  const driver = createDriver(account.providerId, {
+  const driver = createDriver(account.providerId as EProviders, {
     auth: {
       accessToken: account.accessToken,
       refreshToken: account.refreshToken,
@@ -107,26 +107,13 @@ const connectionHandlerHook = async (account: Account) => {
     },
   });
 
-  const userInfo = await driver.getUserInfo().catch(async () => {
-    if (account.accessToken) {
-      await driver.revokeToken(account.accessToken);
-      await resetConnection(account.id);
-    }
-    throw new Response(null, { status: 301, headers: { Location: '/' } });
-  });
+  const userInfo = await driver.getUserInfo();
 
   if (!userInfo?.address) {
-    try {
-      await Promise.allSettled(
-        [account.accessToken, account.refreshToken]
-          .filter(Boolean)
-          .map((t) => driver.revokeToken(t as string)),
-      );
-      await resetConnection(account.id);
-    } catch (error) {
-      console.error('Failed to revoke tokens:', error);
-    }
-    throw new Response(null, { status: 303, headers: { Location: '/' } });
+    console.error('Failed to get user info', { account });
+    throw new APIError('EXPECTATION_FAILED', {
+      message: 'Failed to access your account, contact us on Discord for support',
+    });
   }
 
   const updatingInfo = {
@@ -144,23 +131,25 @@ const connectionHandlerHook = async (account: Account) => {
     userInfo.address,
     updatingInfo,
   );
+};
 
-  if (env.NODE_ENV === 'production') {
-    await Effect.runPromise(
-      scheduleCampaign({ address: userInfo.address, name: userInfo.name || 'there' }),
+const onAfterUserCreation = async (user: any, env: ZeroEnv) => {
+  if (user) {
+    Effect.runPromise(
+      scheduleCampaign({ address: user.email, name: user.name || 'there' }, env),
     );
   }
 
   if (env.GOOGLE_S_ACCOUNT && env.GOOGLE_S_ACCOUNT !== '{}') {
     await enableBrainFunction({
-      id: result.id,
-      providerId: account.providerId as EProviders,
+      id: user.id,
+      providerId: EProviders.google,
     });
   }
 };
 
-export const createAuth = () => {
-  const twilioClient = twilio();
+export const createAuth = (env: ZeroEnv) => {
+  const twilioClient = twilio(env as unknown as Record<string, string>);
   const dub = new Dub();
 
   return betterAuth({
@@ -190,16 +179,14 @@ export const createAuth = () => {
       deleteUser: {
         enabled: true,
         async sendDeleteAccountVerification(data) {
-          const verificationUrl = data.url;
-
-          await resend().emails.send({
+          await resend(env as unknown as Record<string, string>).emails.send({
             from: '0.email <no-reply@0.email>',
             to: data.user.email,
             subject: 'Delete your 0.email account',
             html: `
             <h2>Delete Your 0.email Account</h2>
             <p>Click the link below to delete your account:</p>
-            <a href="${verificationUrl}">${verificationUrl}</a>
+            <a href="${data.url}">${data.url}</a>
           `,
           });
         },
@@ -258,10 +245,15 @@ export const createAuth = () => {
     databaseHooks: {
       account: {
         create: {
-          after: connectionHandlerHook,
+          after: (account) => connectionHandlerHook(account, env),
         },
         update: {
-          after: connectionHandlerHook,
+          after: (account) => connectionHandlerHook(account, env),
+        },
+      },
+      user: {
+        create: {
+          after: async (user) => await onAfterUserCreation(user, env),
         },
       },
     },
@@ -269,7 +261,7 @@ export const createAuth = () => {
       enabled: false,
       requireEmailVerification: true,
       sendResetPassword: async ({ user, url }) => {
-        await resend().emails.send({
+        await resend(env as unknown as Record<string, string>).emails.send({
           from: '0.email <onboarding@0.email>',
           to: user.email,
           subject: 'Reset your password',
@@ -288,13 +280,13 @@ export const createAuth = () => {
       sendVerificationEmail: async ({ user, token }) => {
         const verificationUrl = `${env.VITE_PUBLIC_APP_URL}/api/auth/verify-email?token=${token}&callbackURL=/settings/connections`;
 
-        await resend().emails.send({
+        await resend(env as unknown as Record<string, string>).emails.send({
           from: '0.email <onboarding@0.email>',
           to: user.email,
           subject: 'Verify your 0.email account',
           html: `
-            <h2>Verify Your 0.email Account</h2>
-            <p>Click the link below to verify your email:</p>
+            <h2>Verify Your Account</h2>
+            <p>Click the link below to verify your account:</p>
             <a href="${verificationUrl}">${verificationUrl}</a>
           `,
         });
@@ -329,12 +321,12 @@ export const createAuth = () => {
         }
       }),
     },
-    ...createAuthConfig(),
+    ...createAuthConfig(env),
   });
 };
 
-const createAuthConfig = () => {
-  const cache = redis();
+export const createAuthConfig = (env: ZeroEnv) => {
+  const cache = redis(env as unknown as Record<string, string>);
   const { db } = createDb(env.HYPERDRIVE.connectionString);
   return {
     database: drizzleAdapter(db, { provider: 'pg' }),
@@ -363,6 +355,8 @@ const createAuthConfig = () => {
     },
     baseURL: env.VITE_PUBLIC_BACKEND_URL,
     trustedOrigins: [
+      env.VITE_PUBLIC_APP_URL,
+      env.VITE_PUBLIC_BACKEND_URL,
       'https://app.0.email',
       'https://sapi.0.email',
       'https://staging.0.email',
@@ -395,8 +389,8 @@ const createAuthConfig = () => {
   } satisfies BetterAuthOptions;
 };
 
-export const createSimpleAuth = () => {
-  return betterAuth(createAuthConfig());
+export const createSimpleAuth = (env: ZeroEnv) => {
+  return betterAuth(createAuthConfig(env));
 };
 
 export type Auth = ReturnType<typeof createAuth>;
